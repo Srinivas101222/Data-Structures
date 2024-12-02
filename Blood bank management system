@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define structure for blood donation
+struct Donation {
+    int donationID;
+    char donorName[50];
+    int donorAge;
+    char bloodType[5];
+    int unitsDonated;
+    // Add more relevant fields as needed
+};
+
+// Function prototypes
+void donateBlood(struct Donation donations[], int *donationCount);
+void distributeBlood(struct Donation donations[], int donationCount);
+void displayDonations(struct Donation donations[], int donationCount);
+
+int main() {
+    struct Donation donations[100]; // Assuming a maximum of 100 donations
+    int donationCount = 0;
+    int choice;
+
+    do {
+        printf("\nBlood Bank Management System\n");
+        printf("1. Donate Blood\n");
+        printf("2. Distribute Blood\n");
+        printf("3. Display Donations\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                donateBlood(donations, &donationCount);
+                break;
+            case 2:
+                distributeBlood(donations, donationCount);
+                break;
+            case 3:
+                displayDonations(donations, donationCount);
+                break;
+            case 4:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+
+void donateBlood(struct Donation donations[], int *donationCount) {
+    // Accepting blood donation details
+    printf("\nEnter Donor Name: ");
+    scanf("%s", donations[*donationCount].donorName);
+    printf("Enter Donor Age: ");
+    scanf("%d", &donations[*donationCount].donorAge);
+    printf("Enter Blood Type: ");
+    scanf("%s", donations[*donationCount].bloodType);
+    printf("Enter Units Donated: ");
+    scanf("%d", &donations[*donationCount].unitsDonated);
+
+    // Increment donation count and assign donation ID
+    donations[*donationCount].donationID = *donationCount + 1;
+    (*donationCount)++;
+
+    printf("Blood donated successfully!\n");
+}
+
+void distributeBlood(struct Donation donations[], int donationCount) {
+    char bloodGroup[5];
+    int requiredUnits;
+    int unitsDistributed = 0;
+
+    // Accept blood group for distribution
+    printf("\nEnter Blood Group for Distribution: ");
+    scanf("%s", bloodGroup);
+    printf("Enter Required Units: ");
+    scanf("%d", &requiredUnits);
+
+    // Distribute blood based on availability
+    for (int i = 0; i < donationCount; i++) {
+        if (strcmp(donations[i].bloodType, bloodGroup) == 0) {
+            if (donations[i].unitsDonated >= requiredUnits - unitsDistributed) {
+                printf("Blood distributed from Donation ID %d\n", donations[i].donationID);
+                unitsDistributed += requiredUnits - unitsDistributed;
+                break;
+            } else {
+                printf("Blood distributed from Donation ID %d\n", donations[i].donationID);
+                unitsDistributed += donations[i].unitsDonated;
+            }
+        }
+    }
+
+    if (unitsDistributed < requiredUnits) {
+        printf("Insufficient blood units available for distribution.\n");
+    } else {
+        printf("Blood distributed successfully!\n");
+    }
+}
+
+void displayDonations(struct Donation donations[], int donationCount) {
+    printf("\nDonations:\n");
+    if (donationCount == 0) {
+        printf("No donations made yet.\n");
+    } else {
+        for (int i = 0; i < donationCount; i++) {
+            printf("Donation ID: %d\n", donations[i].donationID);
+            printf("Donor Name: %s\n", donations[i].donorName);
+            printf("Donor Age: %d\n", donations[i].donorAge);
+            printf("Blood Type: %s\n", donations[i].bloodType);
+            printf("Units Donated: %d\n", donations[i].unitsDonated);
+        }
+    }
+}
